@@ -16,7 +16,6 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->double('Sub_Total')->default(0);  
-
             {
                 $table->unsignedBigInteger('user_id');
                 $table->foreign('user_id')
@@ -24,6 +23,7 @@ class CreateOrdersTable extends Migration
                     ->references('id')
                     ->cascadeOnDelete();
             } 
+            $table->boolean('is_comfirmed')->default(false);
 
             $table->softDeletes();
             $table->timestamps();

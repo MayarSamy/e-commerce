@@ -29,7 +29,10 @@
                     </div>
                     <div class="our-link">
                         <ul>
-                            <li><a href="#">My Account</a></li>
+                            <li><form action="{{route('logout')}}" method="POST" class="nav-link text-center">
+        @csrf
+        <button type="submit" class="btn btn-link"> Logout</button>
+    </form></li>
                             <li><a href="#">Our location</a></li>
                             <li><a href="#">Contact Us</a></li>
                         </ul>
@@ -64,7 +67,7 @@
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
                                         <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
                                     </ul>
-                                    <a class="cart" href="#">Add to Cart</a>
+                                    <a class="cart" href="{{route('login')}}">Add to Cart</a>
                                 </div>
                             </div>
                             <div class="why-text">

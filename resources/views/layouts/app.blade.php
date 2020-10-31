@@ -19,7 +19,6 @@
     <body>
         <!-- offers  -->
         @yield('offers')
-        
         <!-- nav  -->
         @include('layouts.parts.nav')
 
