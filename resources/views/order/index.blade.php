@@ -1,47 +1,6 @@
 @extends('layouts.app')
 
-@section('offers') 
-    <div class="main-top">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="text-slid-box">
-                        <div id="offer-box" class="carouselTicker">
-                            <ul class="offer-box">
-                                @foreach ($products as $product)
-                                    @if ($product->offer)
-                                        <li>
-                                            <i class="fab fa-opencart"></i>{{$product->offer}}
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="custom-select-box">
-                        <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-						<option>¥ JPY</option>
-						<option>$ USD</option>
-						<option>€ EUR</option>
-					</select>
-                    </div>
-                    <div class="our-link">
-                        <ul>
-                            <li><form action="{{route('logout')}}" method="POST" class="nav-link text-center">
-        @csrf
-        <button type="submit" class="btn btn-link"> Logout</button>
-    </form></li>
-                            <li><a href="#">Our location</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+<!-- @section('title', 'all orders') -->
 
 @section('content') 
     <div class="products-box">

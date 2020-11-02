@@ -22,6 +22,51 @@ class ProductController extends Controller
       ]);
     }
 
+     public function addToCart($id)
+    {
+        $product = Product::find($id);
+
+        if(!$product) {
+            abort(404);
+        }
+
+        $order = session()->get('orders');
+
+        // if cart is empty then this the first product
+        if(!$order) {
+            $order = [
+                    $id => [
+                        "name" => $product->name,
+                        "quantity" => 1,
+                        "price" => $product->price,
+                    ]
+            ];
+
+            session()->put('orders', $order);
+            print("done");
+            return redirect()->back()->with('success', 'Product added to cart successfully!');
+        }
+
+        // if cart not empty then check if this product exist then increment quantity
+        if(isset($order[$id])) {
+            $order[$id]['quantity']++;
+
+            session()->put('orders', $order);
+            return redirect()->back()->with('success', 'Product added to cart successfully!');
+
+        }
+
+        // if item not exist in cart then add to cart with quantity = 1
+        $order[$id] = [
+            "name" => $product->name,
+            "quantity" => 1,
+            "price" => $product->price,
+        ];
+
+        session()->put('orders', $order);
+        return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -74,7 +119,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        
     }
 
     /**

@@ -27,10 +27,11 @@
                 <div class="attr-nav">
                     <ul>
                         <li class="search"><a href="#"><i class="fa fa-search"></i></a></li>
-                        <li class="side-menu"><a href="#">
+                        <li class="side-menu"><a href="{{route('orders.index')}}">
 						<i class="fa fa-shopping-bag"></i>
                             <span class="badge">
                                         <!-- show number of items in cart -->
+                                        {{ count((array) session('cart')) }}
                             </span>
 					</a></li>
                     </ul>
@@ -42,7 +43,23 @@
                 <a href="#" class="close-side"><i class="fa fa-times"></i></a>
                 <li class="cart-box">
                     <ul class="cart-list">
+                    <?php $total = 0 ?>
+                    @if(session('orders'))
+                        @foreach(session('orders') as $id => $details)
+                        <?php $total += $details['price'] * $details['quantity'] ?>
+                            <li>
+                                <h6><a href="#">{{ $details['name'] }}</a></h6>
+                                <p>{{$details['quantity'] }}x -<span class="price">${{ $details['price'] }}</span></p>
+                            </li>
+                            @endforeach
+                            @endif
+                            <li class="total">
+                                <a href="{{ route('orders.index')}}" class="btn btn-default hvr-hover btn-cart">VIEW CART</a>
+                                <span class="float-right"><strong>Total: ${{ $total }}</strong></span>
+                            </li>
+                            
                                     <!-- show cart items -->
+                       
                     </ul>
                 </li>
             </div>
