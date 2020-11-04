@@ -13,15 +13,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function(){
+
+Route::get('/', function () {
     return redirect('login');
 });
 
 Route::get('/home', [App\Http\Controllers\ProductController::class, 'index'])->name('home');
-//Route::resource('products', App\Http\Controllers\ProductController::class); 
+Route::get('add/{id}', [App\Http\Controllers\ProductController::class, 'addToCart']);
+Route::delete('remove', [App\Http\Controllers\ProductController::class, 'remove']);
 
-Route::resource('orders', App\Http\Controllers\OrderController::class); 
-Route::get('add-to-cart/{id}', [App\Http\Controllers\ProductController::class, 'addToCart']);  
+Route::resource('orders', App\Http\Controllers\OrderController::class);
 
 Auth::routes();
 

@@ -7,7 +7,7 @@
                         <div class="footer-widget">
                             <h4>About ThewayShop</h4>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                                </p>
+                            </p>
                             <ul>
                                 <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
                                 <li><a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
@@ -54,8 +54,8 @@
     </footer>
     <!-- End Footer  -->
 
-        <!-- Start copyright  -->
-        <div class="footer-copyright">
+    <!-- Start copyright  -->
+    <div class="footer-copyright">
         <p class="footer-company">All Rights Reserved. &copy; 2018 <a href="#">ThewayShop</a> Design By :
             <a href="https://html.design/">html design</a></p>
     </div>

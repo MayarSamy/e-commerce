@@ -16,9 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return view('order\show', [
-            'orders'=>Order::where('user_id', auth()->user()->id)
-        ]);
+        return view('order\show');
     }
 
     /**
@@ -39,6 +37,18 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        if($request->id) {
+            $order = session()->get('orders');
+            if($order) {
+                unset($order[$request->id]);
+                session()->put('orders', $order);
+            }
+            session()->flash('success', 'Product removed successfully');
+        }
+
+
+        /////////////////////////////////////////
+
         $request->merge([
             'user_id' =>$request->user()->id
         ]);
@@ -59,10 +69,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        return view('order\show', [
-            'order'=> $order,
-            'products'=>$order->products
-        ]);    }
+        //
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -72,11 +80,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        return view('order\edit', [
-            'order'=> $order,
-            'products'=>$order->products->all(),
-            'users'=>$order->user(),
-        ]);    
+        //
     }
 
     /**

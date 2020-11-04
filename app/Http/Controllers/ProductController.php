@@ -16,55 +16,70 @@ class ProductController extends Controller
     {
         $searched = $request->query('search');
         return view('welcome', [
-          'products'=> Product::
-            where('name', 'LIKE', "%{$searched}%")
-            ->paginate($request->query('limit', 10))
-      ]);
+            'products' => Product::where('name', 'LIKE', "%{$searched}%")
+                ->paginate($request->query('limit', 10))
+        ]);
     }
 
-     public function addToCart($id)
+    public function addToCart($id)
     {
         $product = Product::find($id);
-
-        if(!$product) {
+        if (!$product) {
             abort(404);
         }
-
         $order = session()->get('orders');
-
+        $subTotal = session()->get('sub-total');
         // if cart is empty then this the first product
-        if(!$order) {
+        if (!$order && !$subTotal) {
             $order = [
-                    $id => [
-                        "name" => $product->name,
-                        "quantity" => 1,
-                        "price" => $product->price,
-                    ]
+                $id => [
+                    "name" => $product->name,
+                    "quantity" => 1,
+                    "price" => $product->price,
+                    "total" => $product->price,
+                    "offer" => $product->offer,
+                ]
             ];
-
+            $subTotal = $product->price;
             session()->put('orders', $order);
+            session()->put('sub-total', $subTotal);
             print("done");
             return redirect()->back()->with('success', 'Product added to cart successfully!');
         }
 
-        // if cart not empty then check if this product exist then increment quantity
-        if(isset($order[$id])) {
+        if (isset($order[$id])) {
             $order[$id]['quantity']++;
-
+            $order[$id]['price'] = $order[$id]['price'];
+            $order[$id]['total'] = $order[$id]['price'] * $order[$id]['quantity'];
             session()->put('orders', $order);
+            $subTotal = $subTotal + $order[$id]['price'];
+            session()->put('sub-total', $subTotal);
             return redirect()->back()->with('success', 'Product added to cart successfully!');
-
         }
 
-        // if item not exist in cart then add to cart with quantity = 1
         $order[$id] = [
             "name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
+            "total" => $product->price,
+            "offer" => $product->offer
         ];
-
         session()->put('orders', $order);
+        $subTotal = $subTotal + $product->price;
+        session()->put('sub-total', $subTotal);
         return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
+
+    public function remove(Request $request)
+    {
+        if ($request->id) {
+            $order = session()->get('orders');
+            if (isset($order[$request->id])) {
+                unset($order[$request->id]);
+                session()->put('orders', $order);
+            }
+            session()->flash('success', 'Product removed successfully');
+        }
     }
 
     /**
@@ -119,7 +134,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        
     }
 
     /**

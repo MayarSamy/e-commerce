@@ -15,30 +15,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $total = 0 ?>
+                            <?php $subTotal = session()->get('sub-total') ?>
                             @if(session('orders'))
-                                @foreach(session('orders') as $id => $details)
-                                <?php $total += $details['price'] * $details['quantity'] ?>
-                                <tr>
-                                    <td class="name-pr">
-                                        <a href="#">
-                                            {{ $details['name'] }}
-								        </a>
-                                    </td>
-                                    <td class="price-pr">
-                                        <p>{{ $details['price'] }}</p>
-                                    </td>
-                                    <td class="quantity-box"><input type="number" size="4" value="{{$details['quantity']}}" min="0" step="1" class="c-input-text qty text"></td>
-                                    <td class="total-pr">
-                                        <p>{{ $details['price'] * $details['quantity'] }}</p>
-                                    </td>
-                                    <td class="remove-pr">
-                                        <a href="#">
-									        <i class="fas fa-times"></i>
-								        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
+                            @foreach(session('orders') as $id => $details)
+                            <tr>
+                                <td class="name-pr">
+                                    <a href="#">
+                                        {{ $details['name'] }}
+                                    </a>
+                                </td>
+                                <td class="price-pr">
+                                    <p>{{ $details['price'] }}</p>
+                                </td>
+                                <td class="quantity-box">
+                                    <p>{{$details['quantity']}}</p>
+                                </td>
+                                <td class="total-pr">
+                                    <p>{{ $details['total']}}</p>
+                                </td>
+                                <td class="remove-pr">
+                                    <button class="btn btn-danger btn-sm remove" data-id="{{ $id }}"><i class="fa fa-trash-o"></i>Remove</button>
+                                </td>
+                            </tr>
+                            @endforeach
                             @endif
                         </tbody>
                     </table>
@@ -63,71 +62,55 @@
                     <h3>Order summary</h3>
                     <div class="d-flex">
                         <h4>Sub Total</h4>
-                        <div class="ml-auto font-weight-bold"> {{ $total }} </div>
+                        <div class="ml-auto"> {{ $subTotal }} </div>
+                    </div>
+                    <div class="d-flex">
+                        <h4>Tax</h4>
+                        <div class="ml-auto"> {{ $subTotal * 0.14}} </div>
                     </div>
                     <div class="d-flex">
                         <h4>Discount</h4>
-                        <div class="ml-auto font-weight-bold"></div>
                     </div>
+                    @foreach(session('orders') as $id => $details)
+                    @if($details['offer'] != null)
+                    <div class="d-flex">
+                        <h4></h4>
+                        <div class="ml-auto"> {{$details['offer']}} </div>
+                    </div>
+                    @endif
+                    @endforeach
+
                     <hr class="my-1">
-                    <div class="d-flex">
-                        <h4>Tax</h4>
-                        <div class="ml-auto font-weight-bold"> {{ $total * 0.14}} </div>
-                    </div>
-                    <div class="d-flex">
-                        <h4>Shipping Cost</h4>
-                        <div class="ml-auto font-weight-bold"> Free </div>
-                    </div>
-                    <hr>
                     <div class="d-flex gr-total">
                         <h5>Grand Total</h5>
-                        <div class="ml-auto h5">{{ ($total * 0.14) + $total}}</div>
+                        <div class="ml-auto h5">{{ ($subTotal * 0.14) + $subTotal}}</div>
                     </div>
                     <hr>
-                 </div>
+                </div>
             </div>
-            <div class="col-12 d-flex shopping-box"><a href="" class="ml-auto btn hvr-hover">Checkout</a> </div>
+            <div class="col-12 d-flex shopping-box"><a href="{{route('orders.store')}}" class="ml-auto btn hvr-hover">Checkout</a> </div>
         </div>
     </div>
 </div>
 
-
-
 @section('js')
-    <script>
-        //update-box
-        // //removimg row
-        // $(document).on('click', '.row-delete', function () {
-        //     const rowId = '#' + $(this).attr('row-id');
-        //     $(rowId).remove();
-        // });
-
-        // //changing the total of the row on changing the quantity
-        // $(document).on('keyup', '.input-product-quantity', function () {
-        //     const rowId = '#' + $(this).attr('row-id'),
-        //         productQuantity = $(this).children("option:selected").data('quantity');
-        //         calculateTotal(rowId);
-        // });
-
-        // //changing the product price to the selected product price 
-        // $(document).on('change', '.input-product-product_id', function () {
-        //     const rowId = '#' + $(this).attr('row-id'),
-        //         price = $(this).children("option:selected").data('price');
-        //     $(`${rowId} .input-product-price`).val(price);
-        //     calculateTotal(rowId);
-        // });
-
-
-        // // Functions
-
-        // //calculating the row total 
-        // function calculateTotal(rowId) {
-        //     const quantity = $(`${rowId} .input-product-quantity`).val(),
-        //         price = $(`${rowId} .input-product-price`).val(),
-        //         total = price * quantity;
-
-        //     $(`${rowId} .input-product-total`).val(total);
-        // }
-
-    </script>
+<script>
+    $(".remove").click(function(e) {
+        e.preventDefault();
+        var ele = $(this);
+        if (confirm("Are you sure")) {
+            $.ajax({
+                url: '{{ url("remove") }}',
+                method: "DELETE",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: ele.attr("data-id")
+                },
+                success: function(response) {
+                    window.location.reload();
+                }
+            });
+        }
+    });
+</script>
 @endsection
