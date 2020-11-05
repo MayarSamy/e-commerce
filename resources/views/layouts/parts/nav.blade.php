@@ -1,5 +1,5 @@
-<?php $total = \App\Http\Controllers\ProductController::discount(); ?>
-    
+<?php $subTotal = \App\Http\Controllers\ProductController::discount(); ?>
+
     <!-- Start Main Top -->
     <header class="main-header">
         <!-- Start Navigation -->
