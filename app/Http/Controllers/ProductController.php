@@ -28,22 +28,17 @@ class ProductController extends Controller
             abort(404);
         }
         $order = session()->get('orders');
-        $subTotal = session()->get('sub-total');
         // if cart is empty then this the first product
-        if (!$order && !$subTotal) {
+        if (!$order) {
             $order = [
                 $id => [
                     "name" => $product->name,
                     "quantity" => 1,
                     "price" => $product->price,
-                    "total" => $product->price,
-                    "offer" => $product->offer,
+                    "total" => $product->price
                 ]
             ];
-            $subTotal = $product->price;
             session()->put('orders', $order);
-            session()->put('sub-total', $subTotal);
-            print("done");
             return redirect()->back()->with('success', 'Product added to cart successfully!');
         }
 
@@ -52,8 +47,6 @@ class ProductController extends Controller
             $order[$id]['price'] = $order[$id]['price'];
             $order[$id]['total'] = $order[$id]['price'] * $order[$id]['quantity'];
             session()->put('orders', $order);
-            $subTotal = $subTotal + $order[$id]['price'];
-            session()->put('sub-total', $subTotal);
             return redirect()->back()->with('success', 'Product added to cart successfully!');
         }
 
@@ -61,12 +54,9 @@ class ProductController extends Controller
             "name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
-            "total" => $product->price,
-            "offer" => $product->offer
+            "total" => $product->price
         ];
         session()->put('orders', $order);
-        $subTotal = $subTotal + $product->price;
-        session()->put('sub-total', $subTotal);
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
 
@@ -81,6 +71,43 @@ class ProductController extends Controller
             session()->flash('success', 'Product removed successfully');
         }
     }
+
+    public static function discount()
+    {
+        $order = session()->get('orders');
+        $subTotal = 0;
+        $tax = 0;
+        $totalWithTaxes = 0 ;
+        $totalDiscount = 0;
+        $offers = [];
+
+        foreach ($order as $id => $details) {
+            $subTotal = $subTotal + $details['total'];
+            $tax = $subTotal * 0.14;
+            $totalWithTaxes = $subTotal + $tax ;
+
+            if ($details['name'] == 'Shoes') {
+                $discount = $details['price'] * 0.10;
+                $totalDiscount = $totalDiscount + $discount;
+                array_push($offers, "10% off shoes: -" . $discount );
+            } else if ($details['name'] == 'Jacket') {
+                foreach ($order as $id => $item) {
+                    if ($item['name'] == 'T-shirt' && $item['quantity'] == 2) {
+                        $discount = $details['price'] * 0.50;
+                        $totalDiscount = $totalDiscount + $discount;
+                        array_push($offers, "50% off jacket: -" . $discount );
+                    }
+                }
+            }
+        }
+        session()->put('tax', $tax);
+        session()->put('sub-total', $subTotal);
+        $grandTotal = $totalWithTaxes - $totalDiscount;
+        session()->put('grand-total', $grandTotal);
+        session()->put('discounts', $offers);
+        return $subTotal;
+    }
+
 
     /**
      * Show the form for creating a new resource.

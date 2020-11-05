@@ -37,9 +37,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->id) {
+        if ($request->id) {
             $order = session()->get('orders');
-            if($order) {
+            if ($order) {
                 unset($order[$request->id]);
                 session()->put('orders', $order);
             }
@@ -50,16 +50,17 @@ class OrderController extends Controller
         /////////////////////////////////////////
 
         $request->merge([
-            'user_id' =>$request->user()->id
+            'user_id' => $request->user()->id
         ]);
         $order = Order::create($request->all());
-        
+
         //nedd to do the validation that the quantity is less or equal yhe product quantity 
-        
+
         $order->products()->attach($request->get('products'));
         $order->save();
 
-        return redirect(route('orders.show', $order));    }
+        return redirect(route('orders.show', $order));
+    }
 
     /**
      * Display the specified resource.
