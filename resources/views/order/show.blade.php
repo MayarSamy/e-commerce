@@ -33,7 +33,7 @@
                                     <tr>
                                         <td class="name-pr">
                                             <a href="#">
-                                                {{ $details['name'] }}
+                                                {{ $details['product_name'] }}
                                             </a>
                                         </td>
                                         <td class="price-pr">
@@ -88,7 +88,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 d-flex shopping-box"><a href="{{route('orders.store')}}" class="ml-auto btn hvr-hover">Checkout</a> </div>
+                    <div class="col-12 d-flex shopping-box">
+                    <button type="submit" class="ml-auto btn hvr-hover" id="btn-save-order">Checkout</button>
+                    </div>
                 </div>
             </div>
         </div>

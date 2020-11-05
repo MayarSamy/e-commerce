@@ -30,7 +30,8 @@ class CreateOrderDetailsTable extends Migration
                     ->references('id')
                     ->cascadeOnDelete();
             }
-            
+
+            $table->string('product_name')->default('');   
             $table->unsignedInteger('quantity')->default(0);
             $table->unsignedDouble('price')->default(0);
             $table->unsignedDouble('total')->default(0);

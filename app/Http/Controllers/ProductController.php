@@ -32,7 +32,8 @@ class ProductController extends Controller
         if (!$order) {
             $order = [
                 $id => [
-                    "name" => $product->name,
+                    "product_id" => $id,
+                    "product_name" => $product->name,
                     "quantity" => 1,
                     "price" => $product->price,
                     "total" => $product->price
@@ -51,7 +52,8 @@ class ProductController extends Controller
         }
 
         $order[$id] = [
-            "name" => $product->name,
+            "product_id" => $id,
+            "product_name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
             "total" => $product->price
@@ -86,13 +88,13 @@ class ProductController extends Controller
             $tax = $subTotal * 0.14;
             $totalWithTaxes = $subTotal + $tax ;
 
-            if ($details['name'] == 'Shoes') {
+            if ($details['product_name'] == 'Shoes') {
                 $discount = $details['price'] * 0.10;
                 $totalDiscount = $totalDiscount + $discount;
                 array_push($offers, "10% off shoes: -" . $discount );
-            } else if ($details['name'] == 'Jacket') {
+            } else if ($details['product_name'] == 'Jacket') {
                 foreach ($order as $id => $item) {
-                    if ($item['name'] == 'T-shirt' && $item['quantity'] == 2) {
+                    if ($item['product_name'] == 'T-shirt' && $item['quantity'] == 2) {
                         $discount = $details['price'] * 0.50;
                         $totalDiscount = $totalDiscount + $discount;
                         array_push($offers, "50% off jacket: -" . $discount );

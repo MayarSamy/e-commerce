@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class OrderController extends Controller
 {
@@ -37,29 +38,27 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->id) {
-            $order = session()->get('orders');
-            if ($order) {
-                unset($order[$request->id]);
-                session()->put('orders', $order);
-            }
-            session()->flash('success', 'Product removed successfully');
-        }
+        // $request->merge([
+        //     'user_id' => $request->user()->id
+        // ]);
+    
+        // //print_r($request);
+        // // Order::create($request->all());
+        // // foreach ($sessionOrder as $id => $details){
+        // //     $order = [
+        // //     "product-id" => $details['id'] ,
+        // //     "product-name" => $details['name'] , 
+        // //     "quantity" => $details['quantity'] ,
+        // //     "price" => $details['price'] , 
+        // //     "total" =>$details['total'] ];
+        //     $orders = Order::create($request->all());
+        //    // $id = $orders['primaryKey'];
+        //     //print_r($orders);
+        //     $sessionOrder = session()->get('orders');
+        //     $orders->products()->attach($sessionOrder);
+        //     print_r($sessionOrder);
 
-
-        /////////////////////////////////////////
-
-        $request->merge([
-            'user_id' => $request->user()->id
-        ]);
-        $order = Order::create($request->all());
-
-        //nedd to do the validation that the quantity is less or equal yhe product quantity 
-
-        $order->products()->attach($request->get('products'));
-        $order->save();
-
-        return redirect(route('orders.show', $order));
+            // $orders->save();
     }
 
     /**

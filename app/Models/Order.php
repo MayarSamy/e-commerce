@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    //protected $primaryKey = 'order_id';
+
     protected $fillable = [
         'Sub_Total',
-        'user_id'
+        'user_id',
+        //'order_id'
     ];
 
     public function user()
@@ -22,7 +25,8 @@ class Order extends Model
             Product::class,
             'order_details',
             'order_id',
-            'product_id'
+            'product_id',
+            'product_name'
         )
             ->withPivot('price', 'quantity', 'total')
             ->withTimestamps();

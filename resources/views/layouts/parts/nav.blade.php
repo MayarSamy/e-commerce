@@ -1,4 +1,3 @@
-<?php $subTotal = \App\Http\Controllers\ProductController::discount(); ?>
 
     <!-- Start Main Top -->
     <header class="main-header">
@@ -47,7 +46,7 @@
                         @if(session('orders'))
                         @foreach(session('orders') as $id => $details)
                         <li>
-                            <h6><a href="#">{{ $details['name'] }}</a></h6>
+                            <h6><a href="#">{{ $details['product_name'] }}</a></h6>
                             <p>{{$details['quantity'] }}x -<span class="price">{{ $details['total'] }}</span></p>
                         </li>
                         @endforeach
