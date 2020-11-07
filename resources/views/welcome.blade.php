@@ -20,13 +20,6 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                <div class="custom-select-box">
-                    <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-                        <option>¥ JPY</option>
-                        <option>$ USD</option>
-                        <option>€ EUR</option>
-                    </select>
-                </div>
                 <div class="our-link">
                     <ul>
                         <li>
@@ -80,11 +73,11 @@
                     <div class="why-text">
                         <h4>{{$product->name}}</h4>
                         @if($product->name == 'Shoes')
-                            <h4 style="text-decoration: line-through">${{$product->price}}</h4>
-                            <h5>{{$product->price - ($product->price * 0.10)}}</h6>
-                        @else
+                        <h4 style="text-decoration: line-through">${{$product->price}}</h4>
+                        <h5>{{$product->price - ($product->price * 0.10)}}</h6>
+                            @else
                             <h5>${{$product->price}}</h5>
-                        @endif
+                            @endif
                     </div>
                 </div>
             </div>

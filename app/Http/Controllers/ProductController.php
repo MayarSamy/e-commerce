@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
+//use App\Http\Controllers\Exception;
 
 class ProductController extends Controller
 {
@@ -36,7 +38,8 @@ class ProductController extends Controller
                     "product_name" => $product->name,
                     "quantity" => 1,
                     "price" => $product->price,
-                    "total" => $product->price
+                    "total" => $product->price,
+                    //"order_id" => 0
                 ]
             ];
             session()->put('orders', $order);
@@ -56,7 +59,8 @@ class ProductController extends Controller
             "product_name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
-            "total" => $product->price
+            "total" => $product->price,
+            //"order_id" => 0
         ];
         session()->put('orders', $order);
         return redirect()->back()->with('success', 'Product added to cart successfully!');
@@ -79,38 +83,67 @@ class ProductController extends Controller
         $order = session()->get('orders');
         $subTotal = 0;
         $tax = 0;
-        $totalWithTaxes = 0 ;
+        $totalWithTaxes = 0;
         $totalDiscount = 0;
         $offers = [];
 
         foreach ($order as $id => $details) {
             $subTotal = $subTotal + $details['total'];
             $tax = $subTotal * 0.14;
-            $totalWithTaxes = $subTotal + $tax ;
+            $totalWithTaxes = $subTotal + $tax;
 
             if ($details['product_name'] == 'Shoes') {
                 $discount = $details['price'] * 0.10;
                 $totalDiscount = $totalDiscount + $discount;
-                array_push($offers, "10% off shoes: -" . $discount );
+                array_push($offers, "10% off shoes: -" . $discount);
             } else if ($details['product_name'] == 'Jacket') {
                 foreach ($order as $id => $item) {
                     if ($item['product_name'] == 'T-shirt' && $item['quantity'] == 2) {
                         $discount = $details['price'] * 0.50;
                         $totalDiscount = $totalDiscount + $discount;
-                        array_push($offers, "50% off jacket: -" . $discount );
+                        array_push($offers, "50% off jacket: -" . $discount);
                     }
                 }
             }
         }
         session()->put('tax', $tax);
         session()->put('sub-total', $subTotal);
+        session()->put('totalDiscount', $totalDiscount);
         $grandTotal = $totalWithTaxes - $totalDiscount;
         session()->put('grand-total', $grandTotal);
         session()->put('discounts', $offers);
         return $subTotal;
     }
 
+    public static function convert($prices, $currency)
+    {
+        $converted = [];
+        $req_url = 'https://v6.exchangerate-api.com/v6/9f11d902499873a040b2bb13/latest/USD';
+        $response_json = file_get_contents($req_url);
 
+        // Continuing if we got a result
+        if (false !== $response_json) {
+
+            // Try/catch for json_decode operation
+            try {
+
+                // Decoding
+                $response = json_decode($response_json);
+
+                // Check for success
+                if ('success' === $response->result) {
+                    foreach($prices as $price) {
+                        $base_price = $price; 
+                        $converted_price = $base_price * $response->conversion_rates->$currency;
+                        array_push($converted, $converted_price);
+                }
+                return $converted;
+                }
+            } catch (Exception $e) {
+                // Handle JSON parse error...
+            }
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

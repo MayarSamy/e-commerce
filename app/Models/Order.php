@@ -9,9 +9,10 @@ class Order extends Model
     //protected $primaryKey = 'order_id';
 
     protected $fillable = [
-        'Sub_Total',
+        'sub_Total',
         'user_id',
-        //'order_id'
+        'grand-Total',
+        'discounts'
     ];
 
     public function user()

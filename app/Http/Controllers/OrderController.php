@@ -17,7 +17,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return view('order\show');
+        return view('order\confirmation');
     }
 
     /**
@@ -38,27 +38,27 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->merge([
-        //     'user_id' => $request->user()->id
-        // ]);
-    
-        // //print_r($request);
-        // // Order::create($request->all());
-        // // foreach ($sessionOrder as $id => $details){
-        // //     $order = [
-        // //     "product-id" => $details['id'] ,
-        // //     "product-name" => $details['name'] , 
-        // //     "quantity" => $details['quantity'] ,
-        // //     "price" => $details['price'] , 
-        // //     "total" =>$details['total'] ];
-        //     $orders = Order::create($request->all());
-        //    // $id = $orders['primaryKey'];
-        //     //print_r($orders);
-        //     $sessionOrder = session()->get('orders');
-        //     $orders->products()->attach($sessionOrder);
-        //     print_r($sessionOrder);
+        $products = session()->pull('orders');  
+        $request->merge([
+            'user_id' =>$request->user()->id,
+            'sub_Total'=> session()->get('sub-total'),
+            'grand-Total'=> session()->get('grand-total'),
+            'discounts'=> session()->get('totalDiscount'),
+        ]);
+        $order = Order::create($request->all());
+        foreach($products as $product) {   
+            $product['order_id'] = $order->id;
+            session()->push('orders', $product);
+        }
+        $orderProducts = session()->get('orders');
+        $request->merge([
+            'products' => $orderProducts
+        ]);
+        $order->products()->attach($request->get('products'));
+        $order->save();
+        //session()->forget('orders');
 
-            // $orders->save();
+        return redirect(route('orders.show', $order));
     }
 
     /**
@@ -69,7 +69,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        return view('order.show');
     }
 
     /**
