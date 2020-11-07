@@ -3,7 +3,7 @@
 @section('title', 'order')
 
 @section('content')
-<?php $subTotal = \App\Http\Controllers\ProductController::discount(); ?>
+<?php $subTotal = \App\Http\Controllers\OrderController::discount(); ?>
 <div class="card card-body">
     <form action="{{route('orders.store')}}" method="POST">
         @csrf
@@ -23,10 +23,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $subTotal = session()->get('sub-total');
-                                    $tax = session()->get('tax');
-                                    $grandtotal = session()->get('grand-total');
-                                    $discounts = session()->get('discounts'); ?>
+                                    <?php $tax = session()->get('tax');
+                                          $grandtotal = session()->get('grand-total');
+                                          $discounts = session()->get('discounts'); ?>
 
                                     @if(session('orders'))
                                     @foreach(session('orders') as $id => $details)
@@ -57,41 +56,86 @@
                     </div>
                 </div>
 
+                <div class="custom-select-box">
+                    <select id="basic" class="selectpicker show-tick form-control">
+                        <option value="USD" selected>$ USD</option>
+                        <option value="EGY">£ EGY</option>
+                        <option value="EUR">€ EUR</option>
+                    </select>
+                </div>
+
                 <div class="row my-5">
                     <div class="col-lg-8 col-sm-12"></div>
                     <div class="col-lg-4 col-sm-12">
-                        <div class="order-box">
+
+                        <div class="order-box USD bill">
                             <h3>Order summary</h3>
                             <div class="d-flex">
                                 <h4>Sub Total</h4>
-                                <div class="ml-auto"> {{ $subTotal }} </div>
+                                <div class="ml-auto price">$ {{ $subTotal }} </div>
                             </div>
 
                             <div class="d-flex">
                                 <h4>Tax</h4>
-                                <div class="ml-auto"> {{ $tax}} </div>
-                            </div>
-
-                            <div class="d-flex">
-                                <h4>Discount</h4> &emsp;
-                                @foreach($discounts as $offer)
-                                <p>{{ $offer}} </p> &emsp;
-                                @endforeach
+                                <div class="ml-auto price">$ {{ $tax}} </div>
                             </div>
 
                             <hr class="my-1">
                             <div class="d-flex gr-total">
                                 <h5>Grand Total</h5>
-                                <div class="ml-auto h5">
-                                    {{ $grandtotal }}
-                                </div>
+                                <div class="ml-auto h5 price"> $ {{ $grandtotal }} </div>
+                            </div>
+                        </div>
+
+                        <?php $EGPsub = \App\Http\Controllers\OrderController::convert($subTotal, 'EGP');
+                        $EGPtax = \App\Http\Controllers\OrderController::convert($tax, 'EGP');
+                        $EGPgrand = \App\Http\Controllers\OrderController::convert($grandtotal, 'EGP'); ?>
+                        <div class="order-box EGY bill">
+                            <h3>Order summary</h3>
+                            <div class="d-flex">
+                                <h4>Sub Total</h4>
+                                <div class="ml-auto price">£ {{ $EGPsub }} </div>
+                            </div>
+
+                            <div class="d-flex">
+                                <h4>Tax</h4>
+                                <div class="ml-auto price">£ {{ $EGPtax}} </div>
+                            </div>
+
+                            <hr class="my-1">
+                            <div class="d-flex gr-total">
+                                <h5>Grand Total</h5>
+                                <div class="ml-auto h5 price"> £ {{ $EGPgrand }} </div>
+                            </div>
+                        </div>
+
+                        <?php $EURsub = \App\Http\Controllers\OrderController::convert($subTotal, 'EUR');
+                        $EURtax = \App\Http\Controllers\OrderController::convert($tax, 'EUR');
+                        $EURgrand = \App\Http\Controllers\OrderController::convert($grandtotal, 'EUR'); ?>
+                        <div class="order-box EUR bill">
+                            <h3>Order summary</h3>
+                            <div class="d-flex">
+                                <h4>Sub Total</h4>
+                                <div class="ml-auto price">€ {{ $EURsub }} </div>
+                            </div>
+
+                            <div class="d-flex">
+                                <h4>Tax</h4>
+                                <div class="ml-auto price">€ {{ $EURtax}} </div>
+                            </div>
+
+                            <hr class="my-1">
+                            <div class="d-flex gr-total">
+                                <h5>Grand Total</h5>
+                                <div class="ml-auto h5 price"> € {{ $EURgrand }} </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 d-flex shopping-box">
+                </div>
+
+                <div class="col-12 d-flex shopping-box">
                         <button type="submit" class="ml-auto btn hvr-hover" id="btn-save-order">Checkout</button>
                     </div>
-                </div>
             </div>
         </div>
     </form>
@@ -116,6 +160,13 @@
                 }
             });
         }
+    });
+
+    $(function() {
+        $("#basic").on("change", function() {
+            $(".bill").hide();
+            $("." + this.value).show();
+        }).change();
     });
 </script>
 @endsection

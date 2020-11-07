@@ -21,7 +21,7 @@ Route::get('/', function () {
 Route::get('/home', [App\Http\Controllers\ProductController::class, 'index'])->name('home');
 Route::get('add/{id}', [App\Http\Controllers\ProductController::class, 'addToCart']);
 Route::delete('remove', [App\Http\Controllers\ProductController::class, 'remove']);
-Route::get('/get-products', [App\Http\Controllers\ProductController::class, 'getProudcts'])->name('get-products');
+Route::get('/convert', [App\Http\Controllers\ProductController::class, 'convert'])->name('convert');
 
 Route::resource('orders', App\Http\Controllers\OrderController::class);
 
